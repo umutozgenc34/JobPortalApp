@@ -1,6 +1,6 @@
 ﻿using JobPortalApp.Shared.Entities;
 
-namespace JobPortalApp.Model.Categories;
+namespace JobPortalApp.Model.Categories.Entities;
 
 public class Category : BaseEntity<int>
 {

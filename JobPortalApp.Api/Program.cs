@@ -1,10 +1,13 @@
 using JobPortalApp.Repository.Extensions;
+using JobPortalApp.Service;
+using JobPortalApp.Service.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddRepositoryExtensions(builder.Configuration);
+builder.Services.AddRepositoryExtensions(builder.Configuration)
+    .AddServiceExtensions(typeof(ServiceAssembly));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

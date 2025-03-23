@@ -1,4 +1,4 @@
-﻿using JobPortalApp.Model.Categories;
+﻿using JobPortalApp.Model.Categories.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

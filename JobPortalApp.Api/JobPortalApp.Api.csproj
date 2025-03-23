@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\JobPortalApp.Service\JobPortalApp.Service.csproj" />
     <ProjectReference Include="..\JobPortalApp.Shared\JobPortalApp.Shared.csproj" />
   </ItemGroup>

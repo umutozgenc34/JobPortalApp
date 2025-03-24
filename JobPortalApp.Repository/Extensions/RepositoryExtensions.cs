@@ -1,6 +1,7 @@
 ﻿using JobPortalApp.Repository.Categories.Abstracts;
 using JobPortalApp.Repository.Categories.Concretes;
 using JobPortalApp.Repository.Contexts;
+using JobPortalApp.Repository.Interceptors;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Concretes;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ public static class RepositoryExtensions
         services.AddDbContext<AppDbContext>(opt =>
         {
             opt.UseSqlServer(configuration.GetConnectionString("SqlServer"));
+            opt.AddInterceptors(new AuditDbContextInterceptor());
         });
         return services;
     }

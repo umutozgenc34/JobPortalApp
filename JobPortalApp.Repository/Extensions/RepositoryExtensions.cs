@@ -1,5 +1,7 @@
 ﻿using JobPortalApp.Repository.Categories.Abstracts;
 using JobPortalApp.Repository.Categories.Concretes;
+using JobPortalApp.Repository.Companies.Abstracts;
+using JobPortalApp.Repository.Companies.Concretes;
 using JobPortalApp.Repository.Contexts;
 using JobPortalApp.Repository.Interceptors;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
@@ -16,6 +18,7 @@ public static class RepositoryExtensions
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICategoryRepository,CategoryRepository>();
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
 
         services.AddDbContext<AppDbContext>(opt =>
         {

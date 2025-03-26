@@ -5,12 +5,14 @@ using JobPortalApp.Repository.Companies.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Service.Companies.Abstracts;
 using JobPortalApp.Shared.Responses;
+using JobPortalApp.Shared.Services.Cloudinaryy.Abstracts;
+using JobPortalApp.Shared.Services.Cloudinaryy.Concretes;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace JobPortalApp.Service.Companies.Concretes;
 
-public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork unitOfWork, IMapper mapper) : ICompanyService
+public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork unitOfWork, IMapper mapper,ICloudinaryService cloudinaryService) : ICompanyService
 {
     public async Task<ServiceResult<CompanytDto>> CreateAsync(CreateCompanyRequest request)
     {
@@ -21,6 +23,12 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
         }
 
         var company = mapper.Map<Company>(request);
+
+        if (request.LogoUrl is not null)
+        {
+            var logoUrl = await cloudinaryService.UploadImage(request.LogoUrl, "logos");
+            company.LogoUrl = logoUrl;
+        }
 
         await companyRepository.AddAsync(company);
         await unitOfWork.SaveChangesAsync();
@@ -79,7 +87,13 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
             return ServiceResult.Fail("This company name already exists.", HttpStatusCode.BadRequest);
         }
 
-        mapper.Map(request, company); 
+        mapper.Map(request, company);
+
+        if (request.LogoUrl is not null)
+        {
+            var logoUrl = await cloudinaryService.UploadImage(request.LogoUrl, "logos");
+            company.LogoUrl = logoUrl;
+        }
 
         companyRepository.Update(company);
         await unitOfWork.SaveChangesAsync();

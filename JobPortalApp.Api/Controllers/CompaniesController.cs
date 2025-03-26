@@ -13,10 +13,12 @@ public class CompaniesController(ICompanyService companyService) : CustomBaseCon
     public async Task<IActionResult> GetCompanyById([FromRoute] int id) => CreateActionResult(await companyService.GetByIdAsync(id));
 
     [HttpPost]
-    public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest request) => CreateActionResult(await companyService.CreateAsync(request));
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> CreateCompany([FromForm] CreateCompanyRequest request) => CreateActionResult(await companyService.CreateAsync(request));
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateCompany([FromRoute] int id, [FromBody] UpdateCompanyRequest request) => CreateActionResult(await companyService.UpdateAsync(id, request));
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UpdateCompany([FromRoute] int id, [FromForm] UpdateCompanyRequest request) => CreateActionResult(await companyService.UpdateAsync(id, request));
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCompany([FromRoute] int id) => CreateActionResult(await companyService.DeleteAsync(id));

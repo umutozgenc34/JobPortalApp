@@ -19,11 +19,17 @@ public static class RepositoryExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICategoryRepository,CategoryRepository>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
+        services.Decorate<ICompanyRepository,CompanyRepositoryWithCache>();
 
         services.AddDbContext<AppDbContext>(opt =>
         {
             opt.UseSqlServer(configuration.GetConnectionString("SqlServer"));
             opt.AddInterceptors(new AuditDbContextInterceptor());
+        });
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("Redis");
         });
         return services;
     }

@@ -4,6 +4,7 @@ using JobPortalApp.Repository.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobPortalApp.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250328095843_AddedJobPostingEntityAndUpdatedCompaniyEntity")]
+    partial class AddedJobPostingEntityAndUpdatedCompaniyEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,9 +96,6 @@ namespace JobPortalApp.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
@@ -130,8 +130,6 @@ namespace JobPortalApp.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("CompanyId");
 
                     b.ToTable("JobPostings", (string)null);
@@ -139,26 +137,13 @@ namespace JobPortalApp.Repository.Migrations
 
             modelBuilder.Entity("JobPortalApp.Model.JobPostings.Entities.JobPosting", b =>
                 {
-                    b.HasOne("JobPortalApp.Model.Categories.Entities.Category", "Category")
-                        .WithMany("JobPostings")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("JobPortalApp.Model.Companies.Entities.Company", "Company")
                         .WithMany("JobPostings")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("JobPortalApp.Model.Categories.Entities.Category", b =>
-                {
-                    b.Navigation("JobPostings");
                 });
 
             modelBuilder.Entity("JobPortalApp.Model.Companies.Entities.Company", b =>

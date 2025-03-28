@@ -1,4 +1,5 @@
-﻿using JobPortalApp.Shared.Entities;
+﻿using JobPortalApp.Model.JobPostings.Entities;
+using JobPortalApp.Shared.Entities;
 
 namespace JobPortalApp.Model.Companies.Entities;
 
@@ -12,4 +13,6 @@ public class Company : BaseEntity<int>
     public string? PhoneNumber { get; set; }
     public string? WebsiteUrl { get; set; }
     public string? Location { get; set; }
+
+    public List<JobPosting> JobPostings { get; set; }
 }

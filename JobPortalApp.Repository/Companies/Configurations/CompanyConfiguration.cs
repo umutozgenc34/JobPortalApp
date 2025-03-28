@@ -33,6 +33,11 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
                .HasMaxLength(150);
 
         builder.Property(c => c.About)
-               .HasColumnType("TEXT"); 
+               .HasColumnType("TEXT");
+
+        builder.HasMany(c => c.JobPostings)
+               .WithOne(j => j.Company)
+               .HasForeignKey(j => j.CompanyId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

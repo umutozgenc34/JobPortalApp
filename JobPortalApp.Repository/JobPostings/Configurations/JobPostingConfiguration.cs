@@ -45,5 +45,9 @@ public class JobPostingConfiguration : IEntityTypeConfiguration<JobPosting>
                .WithMany(c=> c.JobPostings)
                .HasForeignKey(j => j.CategoryId)
                .OnDelete(DeleteBehavior.Restrict);
+
+
+        builder.Navigation(x => x.Category).AutoInclude();
+        builder.Navigation(x => x.Company).AutoInclude();
     }
 }

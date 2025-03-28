@@ -10,8 +10,4 @@
     <ProjectReference Include="..\JobPortalApp.Shared\JobPortalApp.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="JobPostings\Dtos\" />
-  </ItemGroup>
-
 </Project>

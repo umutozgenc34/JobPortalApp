@@ -1,5 +1,6 @@
 ﻿using JobPortalApp.Model.JobPostings.Entities;
 using JobPortalApp.Shared.Entities;
+using System.Text.Json.Serialization;
 
 namespace JobPortalApp.Model.Companies.Entities;
 
@@ -14,5 +15,6 @@ public class Company : BaseEntity<int>
     public string? WebsiteUrl { get; set; }
     public string? Location { get; set; }
 
+    [JsonIgnore]
     public List<JobPosting> JobPostings { get; set; }
 }

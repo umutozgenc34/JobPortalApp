@@ -10,4 +10,6 @@ public interface ICategoryService
     Task<ServiceResult<CategoryDto>> CreateAsync(CreateCategoryRequest request);
     Task<ServiceResult> UpdateAsync(int id, UpdateCategoryRequest request);
     Task<ServiceResult> DeleteAsync(int id);
+    Task<ServiceResult<CategoryWithJobPostingsDto>> GetCategoryWithJobPostingsAsync(int categoryId);
+    Task<ServiceResult<List<CategoryWithJobPostingsDto>>> GetCategoryWithJobPostingsAsync();
 }

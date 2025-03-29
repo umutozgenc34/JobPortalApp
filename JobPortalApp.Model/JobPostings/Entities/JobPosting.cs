@@ -1,6 +1,7 @@
 ﻿using JobPortalApp.Model.Categories.Entities;
 using JobPortalApp.Model.Companies.Entities;
 using JobPortalApp.Shared.Entities;
+using System.Text.Json.Serialization;
 
 namespace JobPortalApp.Model.JobPostings.Entities;
 
@@ -13,6 +14,7 @@ public class JobPosting : BaseEntity<Guid>, IAuditEntity
     public string? SalaryRange { get; set; }
 
     public int CompanyId { get; set; }
+    [JsonIgnore]
     public Company Company { get; set; }
     public int CategoryId { get; set; }
     public Category Category { get; set; }

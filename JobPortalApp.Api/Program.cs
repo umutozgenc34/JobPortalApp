@@ -5,7 +5,12 @@ using JobPortalApp.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 
 builder.Services.AddRepositoryExtensions(builder.Configuration)
     .AddServiceExtensions(typeof(ServiceAssembly))

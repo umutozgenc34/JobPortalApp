@@ -1,5 +1,6 @@
 ﻿using JobPortalApp.Model.Categories.Dtos;
 using JobPortalApp.Service.Categories.Abstracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobPortalApp.Api.Controllers;
@@ -20,5 +21,13 @@ public class CategoriesController(ICategoryService categoryService) : CustomBase
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCategory([FromRoute] int id) => CreateActionResult(await categoryService.DeleteAsync(id));
- 
+
+    [HttpGet("{id:int}/jobpostings")]
+    public async Task<IActionResult> GetCategoryWithJobPostings([FromRoute] int id) => CreateActionResult(await categoryService
+        .GetCategoryWithJobPostingsAsync(id));
+
+    [HttpGet("jobpostings")]
+    public async Task<IActionResult> GetCategoryWithJobPostings() => CreateActionResult(await categoryService
+        .GetCategoryWithJobPostingsAsync());
+
 }

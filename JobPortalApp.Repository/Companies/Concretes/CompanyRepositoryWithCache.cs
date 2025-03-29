@@ -94,4 +94,27 @@ public class CompanyRepositoryWithCache : ICompanyRepository
         _distributedCache.RemoveAsync($"{CacheKeyPrefix}{entity.Id}");
         _distributedCache.RemoveAsync($"{CacheKeyPrefix}all_companies");
     }
+
+    public IQueryable<Company?> GetCompanyWithJobPostings()
+    {
+        return _innerRepository.GetCompanyWithJobPostings();
+    }
+
+    public async Task<Company?> GetCompanyWithJobPostingsAsync(int id)
+    {
+        var cacheKey = $"{CacheKeyPrefix}{id}_with_jobs";
+        var cachedData = await _distributedCache.GetStringAsync(cacheKey);
+        if (cachedData != null)
+        {
+            return JsonSerializer.Deserialize<Company>(cachedData, _jsonSerializerOptions);
+        }
+
+        var company = await _innerRepository.GetCompanyWithJobPostingsAsync(id);
+        if (company != null)
+        {
+            await _distributedCache.SetStringAsync(cacheKey, JsonSerializer.Serialize(company, _jsonSerializerOptions),
+                new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
+        }
+        return company;
+    }
 }

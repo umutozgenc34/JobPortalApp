@@ -84,4 +84,23 @@ public class CategoryService(ICategoryRepository categoryRepository, IUnitOfWork
         return ServiceResult.Success("Category updated successfully.", HttpStatusCode.NoContent);
     }
 
+    public async Task<ServiceResult<CategoryWithJobPostingsDto>> GetCategoryWithJobPostingsAsync(int categoryId)
+    {
+        var category = await categoryRepository.GetCategoryWithJobPostingsAsync(categoryId);
+        if (category is null)
+        {
+            return ServiceResult<CategoryWithJobPostingsDto>.Fail("Category not found.", HttpStatusCode.NotFound);
+        }
+
+        var categoryAsDto = mapper.Map<CategoryWithJobPostingsDto>(category);
+        return ServiceResult<CategoryWithJobPostingsDto>.Success(categoryAsDto);
+    }
+
+    public async Task<ServiceResult<List<CategoryWithJobPostingsDto>>> GetCategoryWithJobPostingsAsync()
+    {
+        var categories = await categoryRepository.GetCategoryWithJobPostings().ToListAsync();
+        var categoriesAsDtos = mapper.Map<List<CategoryWithJobPostingsDto>>(categories);
+        return ServiceResult<List<CategoryWithJobPostingsDto>>.Success(categoriesAsDtos);
+    }
+
 }

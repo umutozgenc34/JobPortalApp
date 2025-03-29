@@ -11,5 +11,6 @@ public class CategoryMappingProfile : Profile
         CreateMap<CreateCategoryRequest, Category>();
         CreateMap<UpdateCategoryRequest, Category>();
         CreateMap<Category, CategoryDto>().ReverseMap();
+        CreateMap<Category, CategoryWithJobPostingsDto>();
     }
 }

@@ -12,5 +12,6 @@ public class CompanyMappingProfile : Profile
         CreateMap<CreateCompanyRequest, Company>();
         CreateMap<UpdateCompanyRequest, Company>();
         CreateMap<Company, CompanytDto>().ReverseMap() ;
+        CreateMap<Company, CompanyWithJobPostingsDto>();
     }
 }

@@ -6,7 +6,6 @@ using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Service.Companies.Abstracts;
 using JobPortalApp.Shared.Responses;
 using JobPortalApp.Shared.Services.Cloudinaryy.Abstracts;
-using JobPortalApp.Shared.Services.Cloudinaryy.Concretes;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -99,5 +98,24 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
         await unitOfWork.SaveChangesAsync();
 
         return ServiceResult.Success("Company updated successfully.", HttpStatusCode.NoContent);
+    }
+
+    public async Task<ServiceResult<CompanyWithJobPostingsDto>> GetCompanyWithJobPostingsAsync(int companyId)
+    {
+        var company = await companyRepository.GetCompanyWithJobPostingsAsync(companyId);
+        if (company is null)
+        {
+            return ServiceResult<CompanyWithJobPostingsDto>.Fail("Company not found.", HttpStatusCode.NotFound);
+        }
+
+        var companyAsDto = mapper.Map<CompanyWithJobPostingsDto>(company);
+        return ServiceResult<CompanyWithJobPostingsDto>.Success(companyAsDto);
+    }
+
+    public async Task<ServiceResult<List<CompanyWithJobPostingsDto>>> GetCompanyWithJobPostingsAsync()
+    {
+        var companies = await companyRepository.GetCompanyWithJobPostings().ToListAsync();
+        var companiesAsDto = mapper.Map<List<CompanyWithJobPostingsDto>>(companies);
+        return ServiceResult<List<CompanyWithJobPostingsDto>>.Success(companiesAsDto);
     }
 }

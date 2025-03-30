@@ -1,12 +1,15 @@
 ﻿using JobPortalApp.Model.Categories.Entities;
 using JobPortalApp.Model.Companies.Entities;
 using JobPortalApp.Model.JobPostings.Entities;
+using JobPortalApp.Model.Users.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace JobPortalApp.Repository.Contexts;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<User,IdentityRole,string>(options)
 {
     public DbSet<Category> Categories { get; set; }
     public DbSet<Company> Companies { get; set; }

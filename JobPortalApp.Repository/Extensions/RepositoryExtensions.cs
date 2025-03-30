@@ -1,4 +1,5 @@
-﻿using JobPortalApp.Repository.Categories.Abstracts;
+﻿using JobPortalApp.Model.Users.Entities;
+using JobPortalApp.Repository.Categories.Abstracts;
 using JobPortalApp.Repository.Categories.Concretes;
 using JobPortalApp.Repository.Companies.Abstracts;
 using JobPortalApp.Repository.Companies.Concretes;
@@ -8,6 +9,7 @@ using JobPortalApp.Repository.JobPostings.Abstracts;
 using JobPortalApp.Repository.JobPostings.Concretes;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Concretes;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +36,12 @@ public static class RepositoryExtensions
         {
             options.Configuration = configuration.GetConnectionString("Redis");
         });
+
+        services.AddIdentity<User, IdentityRole>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+            options.Password.RequireNonAlphanumeric = false;
+        }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
         return services;
     }
 }

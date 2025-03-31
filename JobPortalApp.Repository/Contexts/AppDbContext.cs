@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Category> Categories { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<JobPosting> JobPostings { get; set; }
+    public DbSet<UserRefreshToken> UserRefreshTokens{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

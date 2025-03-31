@@ -13,7 +13,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddRepositoryExtensions(builder.Configuration)
-    .AddServiceExtensions(typeof(ServiceAssembly))
+    .AddServiceExtensions(typeof(ServiceAssembly),builder.Configuration)
     .AddSharedExtension(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -29,6 +29,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

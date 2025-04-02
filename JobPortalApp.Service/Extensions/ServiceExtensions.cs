@@ -33,6 +33,7 @@ public static class ServiceExtensions
 
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ICompanyService,CompanyService>();
+        services.AddScoped<ICompanyReviewService,CompanyReviewService>();
         services.AddScoped<IJobPostingService, JobPostingService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRefreshTokenService, UserRefreshTokenService>();

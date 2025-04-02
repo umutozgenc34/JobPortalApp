@@ -25,6 +25,7 @@ public static class RepositoryExtensions
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.Decorate<ICompanyRepository,CompanyRepositoryWithCache>();
         services.AddScoped<ICompanyReviewRepository, CompanyReviewRepository>();
+        services.Decorate<ICompanyReviewRepository,CompanyReviewRepositoryWithCache>();
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
 
         services.AddDbContext<AppDbContext>(opt =>

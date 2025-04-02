@@ -22,7 +22,7 @@ public class CompanyReviewConfiguration : IEntityTypeConfiguration<CompanyReview
                .HasMaxLength(1000); 
 
         builder.HasOne(cr => cr.Company)
-               .WithMany()
+               .WithMany(c => c.CompanyReviews)
                .HasForeignKey(cr => cr.CompanyId)
                .OnDelete(DeleteBehavior.Cascade);
 
@@ -30,5 +30,8 @@ public class CompanyReviewConfiguration : IEntityTypeConfiguration<CompanyReview
                .WithMany()
                .HasForeignKey(cr => cr.UserId)
                .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(x => x.Company).AutoInclude();
+        builder.Navigation(x => x.User).AutoInclude();
     }
 }

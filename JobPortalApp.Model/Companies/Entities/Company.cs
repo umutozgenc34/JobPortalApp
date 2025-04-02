@@ -16,5 +16,7 @@ public class Company : BaseEntity<int>
     public string? Location { get; set; }
 
     [JsonIgnore]
-    public List<JobPosting> JobPostings { get; set; }
+    public List<JobPosting> JobPostings { get; set; } = new();
+    [JsonIgnore]
+    public List<CompanyReview> CompanyReviews { get; set; } = new();
 }

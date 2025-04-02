@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using JobPortalApp.Model.Categories.Dtos;
 using JobPortalApp.Model.Companies.Dtos;
 using JobPortalApp.Model.Companies.Entities;
 
@@ -16,6 +15,9 @@ public class CompanyMappingProfile : Profile
 
         CreateMap<CreateCompanyReviewRequest, CompanyReview>();
         CreateMap<UpdateCompanyReviewRequest, CompanyReview>();
-        CreateMap<CompanyReview, CompanyReviewDto>().ReverseMap();
+        CreateMap<CompanyReview, CompanyReviewDto>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
+            .ReverseMap();
     }
 }

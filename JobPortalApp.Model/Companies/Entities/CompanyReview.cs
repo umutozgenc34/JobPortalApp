@@ -9,10 +9,10 @@ public class CompanyReview : BaseEntity<int>, IAuditEntity
     public string Comment { get; set; }
 
     public int CompanyId { get; set; }
-    public Company Company { get; set; }
+    public Company Company { get; set; } = null!;
 
     public string UserId { get; set; }
-    public User User { get; set; }
+    public User User { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

@@ -40,7 +40,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
                .HasForeignKey(j => j.CompanyId)
                .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany<CompanyReview>()
+        builder.HasMany(c => c.CompanyReviews)
               .WithOne(cr => cr.Company)
               .HasForeignKey(cr => cr.CompanyId)
               .OnDelete(DeleteBehavior.Cascade);

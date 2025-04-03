@@ -16,6 +16,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<JobPosting> JobPostings { get; set; }
     public DbSet<UserRefreshToken> UserRefreshTokens{ get; set; }
     public DbSet<CompanyReview> CompanyReviews { get; set; }
+    public DbSet<UserProfile> UserProfiles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

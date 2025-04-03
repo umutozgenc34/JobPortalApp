@@ -9,6 +9,8 @@ using JobPortalApp.Repository.JobPostings.Abstracts;
 using JobPortalApp.Repository.JobPostings.Concretes;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Concretes;
+using JobPortalApp.Repository.Users.Abstracts;
+using JobPortalApp.Repository.Users.Concretes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +29,7 @@ public static class RepositoryExtensions
         services.AddScoped<ICompanyReviewRepository, CompanyReviewRepository>();
         services.Decorate<ICompanyReviewRepository,CompanyReviewRepositoryWithCache>();
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
+        services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 
         services.AddDbContext<AppDbContext>(opt =>
         {

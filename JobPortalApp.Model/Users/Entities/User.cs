@@ -7,4 +7,5 @@ public class User : IdentityUser, IAuditEntity
 {
     public DateTime CreatedAt { get ; set ; }
     public DateTime UpdatedAt { get; set; }
+    public UserProfile UserProfile { get; set; } = null!;
 }

@@ -17,5 +17,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Email)
                .IsRequired()
                .HasMaxLength(100);
+
+        builder.HasOne(u => u.UserProfile)
+               .WithOne(up => up.User)
+               .HasForeignKey<UserProfile>(up => up.UserId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using JobPortalApp.Model.Users.Dtos;
 using JobPortalApp.Model.Users.Entities;
+using JobPortalApp.Repository.Users.Abstracts;
 using JobPortalApp.Service.Users.Abstracts;
 using JobPortalApp.Shared.Responses;
 using JobPortalApp.Shared.Security.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using static StackExchange.Redis.Role;
 
 namespace JobPortalApp.Service.Users.Concretes;
 
@@ -15,12 +17,15 @@ public class UserService : IUserService
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
+    private readonly IUserProfileRepository _userProfileRepository;
 
-    public UserService(UserManager<User> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager)
+    public UserService(UserManager<User> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager,IUserProfileRepository userProfileRepository)
     {
         _userManager = userManager;
         _mapper = mapper;
         _roleManager = roleManager;
+        _userProfileRepository = userProfileRepository;
+
     }
 
     public async Task<ServiceResult<UserDto>> RegisterAsync(RegisterDto registerDto)
@@ -133,5 +138,12 @@ public class UserService : IUserService
         }
 
         return ServiceResult.Success("User updated.", HttpStatusCode.OK);
+    }
+
+    public async Task<ServiceResult<List<UserWithProfileDto>>> GetUsersWithProfilesAsync()
+    {
+        var users = await _userProfileRepository.GetUsersWithProfilesAsync(); 
+        var usersAsDtos = _mapper.Map<List<UserWithProfileDto>>(users);
+        return ServiceResult<List<UserWithProfileDto>>.Success(usersAsDtos);
     }
 }

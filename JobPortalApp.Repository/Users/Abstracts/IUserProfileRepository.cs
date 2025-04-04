@@ -5,4 +5,5 @@ namespace JobPortalApp.Repository.Users.Abstracts;
 
 public interface IUserProfileRepository : IGenericRepository<UserProfile,int>
 {
+    Task<List<User?>> GetUsersWithProfilesAsync();
 }

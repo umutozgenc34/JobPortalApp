@@ -36,4 +36,8 @@ public class UsersController(IUserService userService) : CustomBaseController
     [HttpPut]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
         => CreateActionResult(await userService.UpdateAsync(request.Id, request));
+
+    [HttpGet("users-with-profiles")]
+    public async Task<IActionResult> GetUsersWithProfiles() => CreateActionResult(await userService.GetUsersWithProfilesAsync());
+
 }

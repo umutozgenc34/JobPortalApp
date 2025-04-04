@@ -16,5 +16,9 @@ public class UserMappingProfile : Profile
         CreateMap<UserProfile,UserProfileDto>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
             .ReverseMap();
+
+        CreateMap<User, UserWithProfileDto>()
+            .ForMember(dest => dest.Profile, opt => opt.MapFrom(src => src.UserProfile))
+            .ReverseMap();
     }
 }

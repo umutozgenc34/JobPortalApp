@@ -35,4 +35,25 @@ public sealed class CloudinaryService : ICloudinaryService
         }
         return string.Empty;
     }
+
+    public async Task<string> UploadPdf(IFormFile formFile, string folderName)
+    {
+        var uploadResult = new RawUploadResult();
+
+        if (formFile.Length > 0)
+        {
+            using var stream = formFile.OpenReadStream();
+            var uploadParams = new RawUploadParams()
+            {
+                File = new FileDescription(formFile.FileName, stream),
+                Folder = folderName
+            };
+
+            uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            string url = _cloudinary.Api.Url.ResourceType("raw").BuildUrl(uploadResult.PublicId); 
+            return url;
+        }
+
+        return string.Empty;
+    }
 }

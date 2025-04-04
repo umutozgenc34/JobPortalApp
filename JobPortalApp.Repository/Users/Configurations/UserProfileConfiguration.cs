@@ -24,5 +24,7 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
 
         builder.Property(up => up.CvFilePath)
                .HasMaxLength(255);
+
+        builder.Navigation(x => x.User).AutoInclude();
     }
 }

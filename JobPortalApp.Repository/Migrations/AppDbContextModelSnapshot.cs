@@ -127,6 +127,38 @@ namespace JobPortalApp.Repository.Migrations
                     b.ToTable("CompanyReviews", (string)null);
                 });
 
+            modelBuilder.Entity("JobPortalApp.Model.JobApplications.Entities.JobApplication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CoverLetter")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("JobPostingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobPostingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("JobApplications", (string)null);
+                });
+
             modelBuilder.Entity("JobPortalApp.Model.JobPostings.Entities.JobPosting", b =>
                 {
                     b.Property<Guid>("Id")
@@ -459,6 +491,27 @@ namespace JobPortalApp.Repository.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobPortalApp.Model.JobApplications.Entities.JobApplication", b =>
+                {
+                    b.HasOne("JobPortalApp.Model.JobPostings.Entities.JobPosting", "JobPosting")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("JobPostingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_JobApplications_JobPostings");
+
+                    b.HasOne("JobPortalApp.Model.Users.Entities.User", "User")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_JobApplications_Users");
+
+                    b.Navigation("JobPosting");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobPortalApp.Model.JobPostings.Entities.JobPosting", b =>
                 {
                     b.HasOne("JobPortalApp.Model.Categories.Entities.Category", "Category")
@@ -552,8 +605,15 @@ namespace JobPortalApp.Repository.Migrations
                     b.Navigation("JobPostings");
                 });
 
+            modelBuilder.Entity("JobPortalApp.Model.JobPostings.Entities.JobPosting", b =>
+                {
+                    b.Navigation("JobApplications");
+                });
+
             modelBuilder.Entity("JobPortalApp.Model.Users.Entities.User", b =>
                 {
+                    b.Navigation("JobApplications");
+
                     b.Navigation("UserProfile")
                         .IsRequired();
                 });

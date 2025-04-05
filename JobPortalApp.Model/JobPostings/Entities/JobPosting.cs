@@ -1,5 +1,6 @@
 ﻿using JobPortalApp.Model.Categories.Entities;
 using JobPortalApp.Model.Companies.Entities;
+using JobPortalApp.Model.JobApplications.Entities;
 using JobPortalApp.Shared.Entities;
 using System.Text.Json.Serialization;
 
@@ -18,6 +19,8 @@ public class JobPosting : BaseEntity<Guid>, IAuditEntity
     public Company Company { get; set; }
     public int CategoryId { get; set; }
     public Category Category { get; set; }
+
+    public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

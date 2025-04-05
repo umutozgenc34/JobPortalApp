@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobPortalApp.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250401111718_AddedCompanyReviewEntity")]
-    partial class AddedCompanyReviewEntity
+    [Migration("20250405110813_FixedJobAppEntity")]
+    partial class FixedJobAppEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,38 @@ namespace JobPortalApp.Repository.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CompanyReviews", (string)null);
+                });
+
+            modelBuilder.Entity("JobPortalApp.Model.JobApplications.Entities.JobApplication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CoverLetter")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("JobPostingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobPostingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("JobApplications", (string)null);
                 });
 
             modelBuilder.Entity("JobPortalApp.Model.JobPostings.Entities.JobPosting", b =>
@@ -251,6 +283,46 @@ namespace JobPortalApp.Repository.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("JobPortalApp.Model.Users.Entities.UserProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CvFilePath")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserProfiles", (string)null);
                 });
 
             modelBuilder.Entity("JobPortalApp.Model.Users.Entities.UserRefreshToken", b =>
@@ -406,7 +478,7 @@ namespace JobPortalApp.Repository.Migrations
             modelBuilder.Entity("JobPortalApp.Model.Companies.Entities.CompanyReview", b =>
                 {
                     b.HasOne("JobPortalApp.Model.Companies.Entities.Company", "Company")
-                        .WithMany()
+                        .WithMany("CompanyReviews")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -418,6 +490,27 @@ namespace JobPortalApp.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JobPortalApp.Model.JobApplications.Entities.JobApplication", b =>
+                {
+                    b.HasOne("JobPortalApp.Model.JobPostings.Entities.JobPosting", "JobPosting")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("JobPostingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_JobApplications_JobPostings");
+
+                    b.HasOne("JobPortalApp.Model.Users.Entities.User", "User")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_JobApplications_Users");
+
+                    b.Navigation("JobPosting");
 
                     b.Navigation("User");
                 });
@@ -439,6 +532,17 @@ namespace JobPortalApp.Repository.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("JobPortalApp.Model.Users.Entities.UserProfile", b =>
+                {
+                    b.HasOne("JobPortalApp.Model.Users.Entities.User", "User")
+                        .WithOne("UserProfile")
+                        .HasForeignKey("JobPortalApp.Model.Users.Entities.UserProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -499,7 +603,22 @@ namespace JobPortalApp.Repository.Migrations
 
             modelBuilder.Entity("JobPortalApp.Model.Companies.Entities.Company", b =>
                 {
+                    b.Navigation("CompanyReviews");
+
                     b.Navigation("JobPostings");
+                });
+
+            modelBuilder.Entity("JobPortalApp.Model.JobPostings.Entities.JobPosting", b =>
+                {
+                    b.Navigation("JobApplications");
+                });
+
+            modelBuilder.Entity("JobPortalApp.Model.Users.Entities.User", b =>
+                {
+                    b.Navigation("JobApplications");
+
+                    b.Navigation("UserProfile")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

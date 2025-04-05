@@ -20,6 +20,9 @@ using JobPortalApp.Service.Auths.Concretes;
 using JobPortalApp.Shared.Security.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using JobPortalApp.Shared.Security.Encryption;
+using JobPortalApp.Repository.JobApplications.Abstracts;
+using JobPortalApp.Service.JobApplications.Abstracts;
+using JobPortalApp.Service.JobApplications.Concretes;
 
 namespace JobPortalApp.Service.Extensions;
 
@@ -41,6 +44,7 @@ public static class ServiceExtensions
         services.AddScoped<IUserProfileService, UserProfileService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IJobApplicationService, JobApplicationService>();
 
         services.Configure<CustomTokenOption>(configuration.GetSection("TokenOption"));
 

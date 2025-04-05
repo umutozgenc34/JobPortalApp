@@ -1,5 +1,6 @@
 ﻿using JobPortalApp.Model.Categories.Entities;
 using JobPortalApp.Model.Companies.Entities;
+using JobPortalApp.Model.JobApplications.Entities;
 using JobPortalApp.Model.JobPostings.Entities;
 using JobPortalApp.Model.Users.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<UserRefreshToken> UserRefreshTokens{ get; set; }
     public DbSet<CompanyReview> CompanyReviews { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
+    public DbSet<JobApplication> JobApplications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

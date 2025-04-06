@@ -1,9 +1,10 @@
 ﻿using JobPortalApp.Model.Users.Dtos;
 using JobPortalApp.Service.Users.Abstracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobPortalApp.Api.Controllers;
-
+[Authorize]
 public class UserProfilesController(IUserProfileService userProfileService) : CustomBaseController
 {
     [HttpGet]

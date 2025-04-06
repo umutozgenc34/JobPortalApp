@@ -9,6 +9,7 @@ namespace JobPortalApp.Api.Controllers;
 [Authorize]
 public class JobApplicationsController(IJobApplicationService jobApplicationService) : CustomBaseController
 {
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> ApplyToJob([FromBody] ApplyToJobRequest request)
     {
@@ -20,7 +21,7 @@ public class JobApplicationsController(IJobApplicationService jobApplicationServ
 
         return CreateActionResult(await jobApplicationService.ApplyAsync(request, userId));
     }
-
+    [Authorize]
     [HttpGet("by-user")]
     public async Task<IActionResult> GetMyApplications()
     {

@@ -17,8 +17,22 @@ services:
         - "6379:6379"
       volumes:
         - jp_redis_data:/data
+   rabbitmq:
+    image: rabbitmq:3-management
+    container_name: jp_rabbitmq_container
+    environment:
+      - RABBITMQ_DEFAULT_USER=Jpa12345
+      - RABBITMQ_DEFAULT_PASS=Jpa12345
+    ports:
+      - "5672:5672"    
+      - "15672:15672"  
+    volumes:
+      - jp_rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
    jp_sql_data:
      driver: local
    jp_redis_data:
       driver: local
+   jp_rabbitmq_data:
+    driver: local

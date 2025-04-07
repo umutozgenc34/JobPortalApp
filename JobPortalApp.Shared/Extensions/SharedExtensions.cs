@@ -1,4 +1,5 @@
-﻿using JobPortalApp.Shared.Services.Cloudinaryy.Abstracts;
+﻿using JobPortalApp.Shared.Rabbit;
+using JobPortalApp.Shared.Services.Cloudinaryy.Abstracts;
 using JobPortalApp.Shared.Services.Cloudinaryy.Concretes;
 using JobPortalApp.Shared.Services.Cloudinaryy.Settings;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ public static class SharedExtensions
     public static IServiceCollection AddSharedExtension(this IServiceCollection services,IConfiguration configuration)
     {
         services.AddScoped<ICloudinaryService, CloudinaryService>();
+        services.AddSingleton<RabbitMQClient>();
         services.Configure<CloudinarySettings>(opt =>
         {
             configuration.GetSection("CloudinarySettings").Bind(opt);

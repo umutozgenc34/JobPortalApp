@@ -2,6 +2,7 @@
 using JobPortalApp.Model.Companies.Entities;
 using JobPortalApp.Model.JobApplications.Entities;
 using JobPortalApp.Model.JobPostings.Entities;
+using JobPortalApp.Model.Notifications.Entities;
 using JobPortalApp.Model.Users.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -19,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<CompanyReview> CompanyReviews { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

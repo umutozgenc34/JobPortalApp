@@ -1,28 +1,28 @@
-﻿using FluentValidation.AspNetCore;
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using JobPortalApp.Service.Auths.Abstracts;
+using JobPortalApp.Service.Auths.Concretes;
 using JobPortalApp.Service.Categories.Abstracts;
 using JobPortalApp.Service.Categories.Concretes;
 using JobPortalApp.Service.Companies.Abstracts;
 using JobPortalApp.Service.Companies.Concretes;
+using JobPortalApp.Service.JobApplications.Abstracts;
+using JobPortalApp.Service.JobApplications.Concretes;
 using JobPortalApp.Service.JobPostings.Abstracts;
-using JobPortalApp.Model.JobPostings.Entities;
 using JobPortalApp.Service.JobPostings.Concretes;
-using Microsoft.Extensions.Configuration;
+using JobPortalApp.Service.Notifications.Abstracts;
+using JobPortalApp.Service.Notifications.Concretes;
 using JobPortalApp.Service.Roles.Abstracts;
 using JobPortalApp.Service.Roles.Concretes;
 using JobPortalApp.Service.Tokens.Abstracts;
 using JobPortalApp.Service.Tokens.Concretes;
 using JobPortalApp.Service.Users.Abstracts;
 using JobPortalApp.Service.Users.Concretes;
-using JobPortalApp.Service.Auths.Abstracts;
-using JobPortalApp.Service.Auths.Concretes;
+using JobPortalApp.Shared.Security.Encryption;
 using JobPortalApp.Shared.Security.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using JobPortalApp.Shared.Security.Encryption;
-using JobPortalApp.Repository.JobApplications.Abstracts;
-using JobPortalApp.Service.JobApplications.Abstracts;
-using JobPortalApp.Service.JobApplications.Concretes;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JobPortalApp.Service.Extensions;
 
@@ -45,6 +45,7 @@ public static class ServiceExtensions
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IJobApplicationService, JobApplicationService>();
+        services.AddScoped<INotificationService, NotificationService>();
 
         services.Configure<CustomTokenOption>(configuration.GetSection("TokenOption"));
 

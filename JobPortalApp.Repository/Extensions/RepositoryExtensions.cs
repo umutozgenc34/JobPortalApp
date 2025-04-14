@@ -9,6 +9,8 @@ using JobPortalApp.Repository.JobApplications.Abstracts;
 using JobPortalApp.Repository.JobApplications.Concretes;
 using JobPortalApp.Repository.JobPostings.Abstracts;
 using JobPortalApp.Repository.JobPostings.Concretes;
+using JobPortalApp.Repository.Notifications.Abstracts;
+using JobPortalApp.Repository.Notifications.Concretes;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Concretes;
 using JobPortalApp.Repository.Users.Abstracts;
@@ -33,6 +35,7 @@ public static class RepositoryExtensions
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
 
         services.AddDbContext<AppDbContext>(opt =>
         {

@@ -12,6 +12,7 @@ using JobPortalApp.Service.JobPostings.Abstracts;
 using JobPortalApp.Service.JobPostings.Concretes;
 using JobPortalApp.Service.Notifications.Abstracts;
 using JobPortalApp.Service.Notifications.Concretes;
+using JobPortalApp.Service.Rabbit.Consumers;
 using JobPortalApp.Service.Roles.Abstracts;
 using JobPortalApp.Service.Roles.Concretes;
 using JobPortalApp.Service.Tokens.Abstracts;
@@ -46,6 +47,9 @@ public static class ServiceExtensions
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IJobApplicationService, JobApplicationService>();
         services.AddScoped<INotificationService, NotificationService>();
+
+        services.AddSingleton<NotificationPublisher>();
+        services.AddHostedService<NotificationConsumerBackgroundService>();
 
         services.Configure<CustomTokenOption>(configuration.GetSection("TokenOption"));
 

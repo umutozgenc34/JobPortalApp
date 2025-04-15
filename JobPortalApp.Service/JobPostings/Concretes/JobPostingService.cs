@@ -4,13 +4,14 @@ using JobPortalApp.Model.JobPostings.Entities;
 using JobPortalApp.Repository.JobPostings.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Service.JobPostings.Abstracts;
+using JobPortalApp.Service.Rabbit.Messages;
 using JobPortalApp.Shared.Responses;
 using MassTransit;
 using System.Net;
 
 namespace JobPortalApp.Service.JobPostings.Concretes;
 
-public class JobPostingService(IJobPostingRepository jobPostingRepository, IUnitOfWork unitOfWork, IMapper mapper) : IJobPostingService
+public class JobPostingService(IJobPostingRepository jobPostingRepository, IUnitOfWork unitOfWork, IMapper mapper,NotificationPublisher notificationPublisher) : IJobPostingService
 {
     public async Task<ServiceResult<JobPostingDto>> CreateAsync(CreateJobPostingRequest request)
     {
@@ -19,6 +20,13 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IUnit
 
         await jobPostingRepository.AddAsync(jobPosting);
         await unitOfWork.SaveChangesAsync();
+
+        notificationPublisher.Publish(new NotificationMessage
+        {
+            Title = "New job posting is published!",
+            Message = $"A new job posting titled '{jobPosting.Title}' has been added."
+        });
+
 
         var jobPostingAsDto = mapper.Map<JobPostingDto>(jobPosting);
         return ServiceResult<JobPostingDto>.SuccessAsCreated(jobPostingAsDto, $"jobpostings/{jobPosting.Id}");

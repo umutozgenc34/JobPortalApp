@@ -13,7 +13,7 @@ public class JobPostingsController(IJobPostingService jobPostingService) : Custo
     [Authorize]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetJobPostingById([FromRoute] Guid id) => CreateActionResult(await jobPostingService.GetByIdAsync(id));
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateJobPosting([FromBody] CreateJobPostingRequest request) => CreateActionResult(await jobPostingService.CreateAsync(request));
     [Authorize]

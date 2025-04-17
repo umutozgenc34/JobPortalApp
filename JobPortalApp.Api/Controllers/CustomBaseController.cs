@@ -1,10 +1,13 @@
-﻿using JobPortalApp.Shared.Responses;
+﻿using Asp.Versioning;
+using JobPortalApp.Shared.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace JobPortalApp.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
+[ApiExplorerSettings(GroupName = "v1")]
 [ApiController]
 public class CustomBaseController : ControllerBase
 {

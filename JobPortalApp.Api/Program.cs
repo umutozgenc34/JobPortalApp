@@ -2,6 +2,7 @@ using JobPortalApp.Repository.Extensions;
 using JobPortalApp.Service;
 using JobPortalApp.Service.Extensions;
 using JobPortalApp.Shared.Extensions;
+using JobPortalApp.Shared.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +17,13 @@ builder.Services.AddRepositoryExtensions(builder.Configuration)
     .AddServiceExtensions(typeof(ServiceAssembly),builder.Configuration)
     .AddSharedExtension(builder.Configuration);
 
+builder.Services.AddVersioningExtension();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+var apiVersionSet = app.AddVersionSetExtension();
 
 if (app.Environment.IsDevelopment())
 {

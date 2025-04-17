@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JobPortalApp.Api.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
 public class CompanyReviewsController(ICompanyReviewService companyReviewService) : CustomBaseController
 {
     [HttpGet]

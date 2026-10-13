@@ -44,8 +44,8 @@ public class JobPostingService(IJobPostingRepository jobPostingRepository, IComp
         {
             notificationPublisher.Publish(new NotificationMessage
             {
-                Title = "New job posting is published!",
-                Message = $"A new job posting titled '{jobPosting.Title}' has been added."
+                Title = "Yeni ilan yayınlandı",
+                Message = $"{jobPosting.Company?.Name ?? "Bir şirket"}, {jobPosting.Location} lokasyonlu \"{jobPosting.Title}\" pozisyonu için ilan yayınladı."
             });
         }
 

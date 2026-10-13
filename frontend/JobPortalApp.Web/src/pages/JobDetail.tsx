@@ -151,7 +151,7 @@ export function JobDetail() {
         <CompanyMark name={job.companyName} logoUrl={job.companyLogoUrl} size={72} />
         <div className="detail-header__main">
           <h1 className="detail-header__title">{job.title}</h1>
-          <p className="detail-header__company">{job.companyName}</p>
+          <Link to={`/sirketler/${job.companyId}`} className="detail-header__company detail-header__company-link">{job.companyName}</Link>
           <div className="detail-header__badges">
             <span className="badge">{job.location}</span>
             <span className="badge">{job.categoryName}</span>
@@ -172,7 +172,9 @@ export function JobDetail() {
           <dl className="facts panel">
             <div>
               <dt>Şirket</dt>
-              <dd>{job.companyName}</dd>
+              <dd>
+                <Link to={`/sirketler/${job.companyId}`} className="text-link">{job.companyName}</Link>
+              </dd>
             </div>
             <div>
               <dt>Konum</dt>

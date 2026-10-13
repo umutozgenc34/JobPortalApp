@@ -96,11 +96,12 @@ export function Home() {
           <section className="home__section">
             <div className="section-head">
               <h2>İlan veren şirketler</h2>
+              <Link to="/sirketler" className="text-link">Tüm şirketler</Link>
             </div>
             <ul className="company-strip">
               {companies.slice(0, 8).map((company) => (
                 <li key={company.id}>
-                  <Link to={`/ilanlar?sirket=${company.id}`} className="company-chip panel">
+                  <Link to={`/sirketler/${company.id}`} className="company-chip panel">
                     <CompanyMark name={company.name} logoUrl={company.logoUrl} size={40} />
                     <span>
                       <span className="company-chip__name">{company.name}</span>

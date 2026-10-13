@@ -79,3 +79,48 @@ export interface JobPostingQuery {
   page?: number;
   pageSize?: number;
 }
+
+export interface UserProfile {
+  id: number;
+  fullName: string;
+  profileImageUrl: string | null;
+  summary: string | null;
+  email: string;
+  cvFilePath: string | null;
+  userName: string;
+}
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface CompanyReview {
+  id: number;
+  rating: number;
+  comment: string;
+  companyId: number;
+  companyName: string;
+  userId: string;
+  userName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CompanyWithJobPostings extends Company {
+  jobPostings: JobPosting[];
+}
+
+export interface JobPostingInput {
+  title: string;
+  description: string;
+  location: string;
+  isActive: boolean;
+  salaryRange: string | null;
+  companyId: number;
+  categoryId: number;
+}

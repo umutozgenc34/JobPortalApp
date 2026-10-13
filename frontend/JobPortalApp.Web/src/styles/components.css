@@ -150,7 +150,8 @@
 
 .footer__links {
   display: flex;
-  gap: 28px;
+  flex-wrap: wrap;
+  gap: 12px 28px;
   font-size: 14px;
   font-weight: 550;
 }
@@ -396,5 +397,387 @@ a.job-row:hover .job-row__title {
 @media (max-width: 420px) {
   .logo__text {
     display: none;
+  }
+}
+
+.bell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.bell:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.bell__count {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  font-size: 15px;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.user-menu__trigger:hover,
+.user-menu__trigger[aria-expanded="true"] {
+  border-color: var(--line);
+  background: var(--surface-2);
+}
+
+.user-menu__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 60;
+  display: grid;
+  min-width: 240px;
+  padding: 6px;
+  box-shadow: 0 12px 32px -12px rgba(20, 22, 28, 0.25);
+}
+
+.user-menu__who {
+  display: grid;
+  padding: 10px 12px 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.user-menu__panel a,
+.user-menu__panel button {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-menu__panel a:hover,
+.user-menu__panel button:hover {
+  background: var(--surface-2);
+}
+
+.user-menu__panel button {
+  color: var(--accent);
+}
+
+.stars {
+  display: inline-flex;
+  gap: 1px;
+  line-height: 1;
+  vertical-align: -1px;
+}
+
+.stars__on {
+  color: #e8a317;
+}
+
+.stars__half {
+  color: #e8a317;
+  opacity: 0.55;
+}
+
+.stars__off {
+  color: var(--line-strong);
+}
+
+.rating-input {
+  display: flex;
+  gap: 4px;
+}
+
+.rating-input__star {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--line-strong);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), color 0.15s var(--ease);
+}
+
+.rating-input__star.is-on {
+  color: #e8a317;
+}
+
+.rating-input__star:hover {
+  transform: scale(1.12);
+}
+
+.modal {
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.35);
+}
+
+.modal::backdrop {
+  background: rgba(15, 17, 20, 0.5);
+}
+
+.modal[open] {
+  animation: modal-in 0.25s var(--ease);
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.modal__inner {
+  padding: 24px 28px 28px;
+}
+
+.modal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.modal__head h2 {
+  font-size: 20px;
+}
+
+.modal__close {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.modal__close:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.modal-form {
+  display: grid;
+  gap: 20px;
+}
+
+.form-card {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+}
+
+.form-card__head {
+  display: grid;
+  gap: 4px;
+}
+
+.form-card__head h2 {
+  font-size: 19px;
+}
+
+.form-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.form-grid__wide {
+  grid-column: 1 / -1;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.list__item {
+  padding: 18px 24px;
+}
+
+.list__item + .list__item {
+  border-top: 1px solid var(--line);
+}
+
+.empty-card {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 32px;
+}
+
+.empty-card h2 {
+  font-size: 20px;
+}
+
+.empty-card .button {
+  margin-top: 8px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs__item {
+  padding: 10px 16px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  font-weight: 550;
+  color: var(--muted);
+}
+
+.tabs__item:hover {
+  color: var(--ink);
+}
+
+.tabs__item.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 550;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.table tbody tr + tr td {
+  border-top: 1px solid var(--line);
+}
+
+.table__primary {
+  display: block;
+  font-weight: 600;
+}
+
+.table__primary:hover {
+  color: var(--accent);
+}
+
+.table__sub {
+  font-size: 13px;
+}
+
+.table__company {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.table__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.table__empty {
+  padding: 32px 16px !important;
+  text-align: center;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-toolbar--form {
+  justify-content: flex-start;
+}
+
+.admin-toolbar--form .field {
+  flex: 1;
+  max-width: 420px;
+}
+
+@media (max-width: 760px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal__inner {
+    padding: 20px;
+  }
+
+  .list__item {
+    padding: 16px;
   }
 }

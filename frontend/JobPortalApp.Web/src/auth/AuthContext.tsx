@@ -10,6 +10,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   register: (userName: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -77,9 +78,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAdmin: Boolean(user?.roles.some((role) => role === "Admin" || role === "SuperAdmin")),
       login,
       register,
-      logout
+      logout,
+      refreshUser: loadUser
     }),
-    [user, loading, login, register, logout]
+    [user, loading, login, register, logout, loadUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

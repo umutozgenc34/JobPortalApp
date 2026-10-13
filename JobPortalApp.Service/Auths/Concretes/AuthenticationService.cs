@@ -25,13 +25,24 @@ public class AuthenticationService : IAuthenticationService
     }
     public async Task<ServiceResult<TokenDto>> CreateTokenAsync(LoginDto loginDto)
     {
-        if (loginDto == null) throw new ArgumentNullException(nameof(loginDto));
+        ArgumentNullException.ThrowIfNull(loginDto);
+
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null) return ServiceResult<TokenDto>.Fail("Email or Password wrong.", HttpStatusCode.BadRequest);
+
+        if (await _userManager.IsLockedOutAsync(user))
+        {
+            return ServiceResult<TokenDto>.Fail("Too many failed login attempts. Please try again later.", HttpStatusCode.TooManyRequests);
+        }
+
         if (!await _userManager.CheckPasswordAsync(user, loginDto.Password))
         {
+            await _userManager.AccessFailedAsync(user);
             return ServiceResult<TokenDto>.Fail("Email or Password wrong.", HttpStatusCode.BadRequest);
         }
+
+        await _userManager.ResetAccessFailedCountAsync(user);
+
         var token = await _tokenService.CreateTokenAsync(user);
         var userRefreshToken = await _userRefreshTokenService.Where(x => x.Id == user.Id).SingleOrDefaultAsync();
         if (userRefreshToken == null)
@@ -44,7 +55,7 @@ public class AuthenticationService : IAuthenticationService
             userRefreshToken.Expiration = token.RefreshTokenExpiration;
         }
         await _unitOfWork.SaveChangesAsync();
-        return ServiceResult<TokenDto>.Success(token, HttpStatusCode.Created);
+        return ServiceResult<TokenDto>.Success(token);
     }
     public async Task<ServiceResult<TokenDto>> CreateTokenByRefreshToken(string refreshToken)
     {
@@ -53,6 +64,14 @@ public class AuthenticationService : IAuthenticationService
         {
             return ServiceResult<TokenDto>.Fail("Refresh token not found.", HttpStatusCode.NotFound);
         }
+
+        if (existRefreshToken.Expiration < DateTime.UtcNow)
+        {
+            _userRefreshTokenService.Delete(existRefreshToken);
+            await _unitOfWork.SaveChangesAsync();
+            return ServiceResult<TokenDto>.Fail("Refresh token expired.", HttpStatusCode.Unauthorized);
+        }
+
         var user = await _userManager.FindByIdAsync(existRefreshToken.Id);
         if (user == null)
         {
@@ -62,7 +81,7 @@ public class AuthenticationService : IAuthenticationService
         existRefreshToken.Code = tokenDto.RefreshToken;
         existRefreshToken.Expiration = tokenDto.RefreshTokenExpiration;
         await _unitOfWork.SaveChangesAsync();
-        return ServiceResult<TokenDto>.Success(tokenDto, HttpStatusCode.Created);
+        return ServiceResult<TokenDto>.Success(tokenDto);
     }
     public async Task<ServiceResult> RevokeRefreshToken(string refreshToken)
     {

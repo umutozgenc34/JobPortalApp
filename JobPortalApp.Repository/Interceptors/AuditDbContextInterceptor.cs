@@ -14,8 +14,9 @@ public class AuditDbContextInterceptor : SaveChangesInterceptor
 
     private static void AddBehavior(DbContext context, IAuditEntity auditEntity)
     {
-        auditEntity.CreatedAt = DateTime.UtcNow;
-        context.Entry(auditEntity).Property(x => x.UpdatedAt).IsModified = false;
+        var now = DateTime.UtcNow;
+        auditEntity.CreatedAt = now;
+        auditEntity.UpdatedAt = now;
     }
 
     private static void ModifiedBehavior(DbContext context, IAuditEntity auditEntity)

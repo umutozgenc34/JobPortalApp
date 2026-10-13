@@ -13,6 +13,7 @@ using JobPortalApp.Service.JobPostings.Concretes;
 using JobPortalApp.Service.Notifications.Abstracts;
 using JobPortalApp.Service.Notifications.Concretes;
 using JobPortalApp.Service.Rabbit.Consumers;
+using JobPortalApp.Service.Rabbit.Publishers;
 using JobPortalApp.Service.Roles.Abstracts;
 using JobPortalApp.Service.Roles.Concretes;
 using JobPortalApp.Service.Tokens.Abstracts;

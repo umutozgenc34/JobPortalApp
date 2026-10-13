@@ -2,8 +2,10 @@
 using JobPortalApp.Model.Users.Dtos;
 using JobPortalApp.Model.Users.Entities;
 using JobPortalApp.Repository.Users.Abstracts;
+using JobPortalApp.Service.Tokens.Abstracts;
 using JobPortalApp.Service.Users.Abstracts;
 using JobPortalApp.Shared.Responses;
+using JobPortalApp.Shared.Security;
 using JobPortalApp.Shared.Security.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +20,17 @@ public class UserService : IUserService
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
     private readonly IUserProfileRepository _userProfileRepository;
+    private readonly IUserRefreshTokenService _userRefreshTokenService;
     private readonly ILogger<UserService> _logger;
 
-    public UserService(UserManager<User> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager,IUserProfileRepository userProfileRepository,ILogger<UserService> logger)
+    public UserService(UserManager<User> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager,IUserProfileRepository userProfileRepository,
+                       IUserRefreshTokenService userRefreshTokenService, ILogger<UserService> logger)
     {
         _userManager = userManager;
         _mapper = mapper;
         _roleManager = roleManager;
         _userProfileRepository = userProfileRepository;
+        _userRefreshTokenService = userRefreshTokenService;
         _logger = logger;
     }
 
@@ -58,16 +63,17 @@ public class UserService : IUserService
             return ServiceResult<UserDto>.Fail(result.Errors.Select(e => e.Description).ToList(), HttpStatusCode.BadRequest);
         }
 
-        if (!await _roleManager.RoleExistsAsync("user"))
+        if (!await _roleManager.RoleExistsAsync(AppRoles.User))
         {
-            await _roleManager.CreateAsync(new IdentityRole("user"));
-            _logger.LogInformation("Role 'user' created during registration.");
+            await _roleManager.CreateAsync(new IdentityRole(AppRoles.User));
+            _logger.LogInformation("Role '{Role}' created during registration.", AppRoles.User);
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(user, "user");
+        var roleResult = await _userManager.AddToRoleAsync(user, AppRoles.User);
         if (!roleResult.Succeeded)
         {
-            _logger.LogWarning("Failed to assign role 'user' to {UserName}: {Errors}", registerDto.UserName, string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+            _logger.LogWarning("Failed to assign role '{Role}' to {UserName}: {Errors}", AppRoles.User, registerDto.UserName, string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+            await _userManager.DeleteAsync(user);
             return ServiceResult<UserDto>.Fail(roleResult.Errors.Select(e => e.Description).First(), HttpStatusCode.BadRequest);
         }
 
@@ -87,6 +93,12 @@ public class UserService : IUserService
             return ServiceResult.Fail("User not found.", HttpStatusCode.NotFound);
         }
 
+        var refreshToken = await _userRefreshTokenService.GetByIdAsync(id);
+        if (refreshToken is not null)
+        {
+            _userRefreshTokenService.Delete(refreshToken);
+        }
+
         var result = await _userManager.DeleteAsync(user);
         if (!result.Succeeded)
         {
@@ -102,12 +114,7 @@ public class UserService : IUserService
     {
         _logger.LogInformation("GetAllAsync called.");
 
-        var users = await _userManager.Users.ToListAsync();
-        if (users.Count == 0)
-        {
-            _logger.LogWarning("GetAllAsync failed - No users found.");
-            return ServiceResult<List<UserDto>>.Fail("Users not found.", HttpStatusCode.NotFound);
-        }
+        var users = await _userManager.Users.AsNoTracking().OrderBy(u => u.UserName).ToListAsync();
 
         var userDtos = _mapper.Map<List<UserDto>>(users);
         _logger.LogInformation("GetAllAsync succeeded - {UserCount} users found.", users.Count);
@@ -128,6 +135,29 @@ public class UserService : IUserService
         var userDto = _mapper.Map<UserDto>(user);
         _logger.LogInformation("GetByIdAsync succeeded for UserId: {UserId}", id);
         return ServiceResult<UserDto>.Success(userDto, HttpStatusCode.OK);
+    }
+
+    public async Task<ServiceResult<CurrentUserDto>> GetCurrentUserAsync(string userId)
+    {
+        _logger.LogInformation("GetCurrentUserAsync called for UserId: {UserId}", userId);
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            _logger.LogWarning("GetCurrentUserAsync failed - User not found: {UserId}", userId);
+            return ServiceResult<CurrentUserDto>.Fail("User not found.", HttpStatusCode.NotFound);
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+        var currentUser = new CurrentUserDto
+        {
+            Id = user.Id,
+            UserName = user.UserName!,
+            Email = user.Email!,
+            Roles = roles.ToList()
+        };
+
+        return ServiceResult<CurrentUserDto>.Success(currentUser);
     }
 
     public async Task<ServiceResult<UserDto>> GetUserByNameAsync(string userName)

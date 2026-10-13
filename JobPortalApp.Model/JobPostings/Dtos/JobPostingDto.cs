@@ -11,6 +11,7 @@ public sealed record JobPostingDto
 
     public int CompanyId { get; init; }
     public string CompanyName { get; init; }
+    public string? CompanyLogoUrl { get; init; }
 
     public int CategoryId { get; init; }
     public string CategoryName { get; init; }

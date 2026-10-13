@@ -17,8 +17,8 @@ public class CustomBaseController : ControllerBase
         return result.Status switch
         {
             HttpStatusCode.NoContent => NoContent(),
-            HttpStatusCode.Created => Created(result.UrlAsCreated, result),
-            _ => new ObjectResult(result) { StatusCode = result.Status.GetHashCode() }
+            HttpStatusCode.Created when result.UrlAsCreated is not null => Created(result.UrlAsCreated, result),
+            _ => new ObjectResult(result) { StatusCode = (int)result.Status }
         };
     }
 
@@ -27,8 +27,8 @@ public class CustomBaseController : ControllerBase
     {
         return result.Status switch
         {
-            HttpStatusCode.NoContent => new ObjectResult(null) { StatusCode = result.Status.GetHashCode() },
-            _ => new ObjectResult(result) { StatusCode = result.Status.GetHashCode() }
+            HttpStatusCode.NoContent => NoContent(),
+            _ => new ObjectResult(result) { StatusCode = (int)result.Status }
         };
     }
 }

@@ -16,8 +16,5 @@ public class CreateCompanyReviewRequestValidator : AbstractValidator<CreateCompa
 
         RuleFor(x => x.CompanyId)
             .GreaterThan(0).WithMessage("CompanyId must be greater than 0.");
-
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("UserId is required.");
     }
 }

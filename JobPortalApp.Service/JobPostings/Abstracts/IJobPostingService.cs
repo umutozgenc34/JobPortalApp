@@ -7,7 +7,7 @@ public interface IJobPostingService
 {
     Task<ServiceResult<JobPostingDto>> CreateAsync(CreateJobPostingRequest request);
     Task<ServiceResult> DeleteAsync(Guid id);
-    Task<ServiceResult<List<JobPostingDto>>> GetAllAsync();
+    Task<ServiceResult<PagedResult<JobPostingDto>>> GetAllAsync(JobPostingQuery query);
     Task<ServiceResult<JobPostingDto>> GetByIdAsync(Guid id);
     Task<ServiceResult> UpdateAsync(Guid id, UpdateJobPostingRequest request);
 }

@@ -33,7 +33,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
                .HasMaxLength(150);
 
         builder.Property(c => c.About)
-               .HasColumnType("TEXT");
+               .IsRequired();
 
         builder.HasMany(c => c.JobPostings)
                .WithOne(j => j.Company)

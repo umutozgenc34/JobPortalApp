@@ -11,13 +11,19 @@ public class JobApplicationRepository(AppDbContext context) : GenericRepository<
     public async Task<bool> HasUserAppliedAsync(string userId, Guid jobPostingId) => await context.JobApplications
             .AnyAsync(x => x.UserId == userId && x.JobPostingId == jobPostingId);
 
-    public async Task<List<JobApplication>> GetApplicationsByUserIdAsync(string userId) =>  await context.JobApplications
+    public async Task<JobApplication?> GetWithDetailsAsync(Guid id) => await context.JobApplications
+            .Include(x => x.JobPosting)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+    public async Task<List<JobApplication>> GetApplicationsByUserIdAsync(string userId) => await context.JobApplications
             .Include(x => x.JobPosting)
             .Where(x => x.UserId == userId)
-            .ToListAsync();
-    public async Task<List<JobApplication>> GetApplicationsByJobPostingIdAsync(Guid jobPostingId) => await context.JobApplications
-            .Include(x => x.User)
-            .Where(x => x.JobPostingId == jobPostingId)
+            .OrderByDescending(x => x.CreatedAt)
             .ToListAsync();
 
+    public async Task<List<JobApplication>> GetApplicationsByJobPostingIdAsync(Guid jobPostingId) => await context.JobApplications
+            .Include(x => x.JobPosting)
+            .Where(x => x.JobPostingId == jobPostingId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
 }

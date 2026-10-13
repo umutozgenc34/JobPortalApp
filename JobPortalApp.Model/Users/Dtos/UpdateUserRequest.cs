@@ -1,3 +1,3 @@
 ﻿namespace JobPortalApp.Model.Users.Dtos;
 
-public sealed record UpdateUserRequest(string Id,string UserName, string Email);
+public sealed record UpdateUserRequest(string UserName, string Email);

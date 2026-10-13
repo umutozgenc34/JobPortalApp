@@ -3,11 +3,12 @@
 public sealed record JobApplicationDto
 {
     public Guid Id { get; init; }
-    public string UserId { get; init; } 
-    public string UserEmail { get; init; } 
+    public string UserId { get; init; }
+    public string UserEmail { get; init; }
 
     public Guid JobPostingId { get; init; }
-    public string JobPostingTitle { get; init; } 
+    public string JobPostingTitle { get; init; }
+    public string CompanyName { get; init; }
 
     public string? CoverLetter { get; init; }
 

@@ -10,6 +10,7 @@ public class JobApplicationMappingProfile : Profile
     {
         CreateMap<JobApplication, JobApplicationDto>()
             .ForMember(dest => dest.JobPostingTitle, opt => opt.MapFrom(src => src.JobPosting.Title))
+            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.JobPosting.Company.Name))
             .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email));
     }
 }

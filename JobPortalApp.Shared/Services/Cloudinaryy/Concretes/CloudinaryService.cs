@@ -10,50 +10,51 @@ namespace JobPortalApp.Shared.Services.Cloudinaryy.Concretes;
 public sealed class CloudinaryService : ICloudinaryService
 {
     private readonly Cloudinary _cloudinary;
-    private readonly Account _account;
-    private readonly CloudinarySettings _cloudinarySettings;
+
     public CloudinaryService(IOptions<CloudinarySettings> cloudOptions)
     {
-        _cloudinarySettings = cloudOptions.Value;
-        _account = new Account(_cloudinarySettings.CloudName, _cloudinarySettings.ApiKey, _cloudinarySettings.ApiSecret);
-        _cloudinary = new CloudinaryDotNet.Cloudinary(_account);
+        var settings = cloudOptions.Value;
+        var account = new Account(settings.CloudName, settings.ApiKey, settings.ApiSecret);
+        _cloudinary = new Cloudinary(account);
     }
+
     public async Task<string> UploadImage(IFormFile formFile, string imageDirectory)
     {
-        var imageUploadResult = new ImageUploadResult();
-        if (formFile.Length > 0)
+        if (formFile.Length == 0) return string.Empty;
+
+        using var stream = formFile.OpenReadStream();
+        var uploadParams = new ImageUploadParams
         {
-            using var stream = formFile.OpenReadStream();
-            var uploadParams = new ImageUploadParams()
-            {
-                File = new FileDescription(formFile.Name, stream),
-                Folder = imageDirectory
-            };
-            imageUploadResult = await _cloudinary.UploadAsync(uploadParams);
-            string url = _cloudinary.Api.UrlImgUp.BuildUrl(imageUploadResult.PublicId);
-            return url;
+            File = new FileDescription(formFile.FileName, stream),
+            Folder = imageDirectory
+        };
+
+        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        if (uploadResult.Error is not null)
+        {
+            throw new InvalidOperationException($"Image upload failed: {uploadResult.Error.Message}");
         }
-        return string.Empty;
+
+        return uploadResult.SecureUrl.ToString();
     }
 
     public async Task<string> UploadPdf(IFormFile formFile, string folderName)
     {
-        var uploadResult = new RawUploadResult();
+        if (formFile.Length == 0) return string.Empty;
 
-        if (formFile.Length > 0)
+        using var stream = formFile.OpenReadStream();
+        var uploadParams = new RawUploadParams
         {
-            using var stream = formFile.OpenReadStream();
-            var uploadParams = new RawUploadParams()
-            {
-                File = new FileDescription(formFile.FileName, stream),
-                Folder = folderName
-            };
+            File = new FileDescription(formFile.FileName, stream),
+            Folder = folderName
+        };
 
-            uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            string url = _cloudinary.Api.Url.ResourceType("raw").BuildUrl(uploadResult.PublicId); 
-            return url;
+        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        if (uploadResult.Error is not null)
+        {
+            throw new InvalidOperationException($"File upload failed: {uploadResult.Error.Message}");
         }
 
-        return string.Empty;
+        return uploadResult.SecureUrl.ToString();
     }
 }

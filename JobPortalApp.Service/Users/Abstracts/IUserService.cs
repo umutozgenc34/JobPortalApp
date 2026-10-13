@@ -7,6 +7,7 @@ namespace JobPortalApp.Service.Users.Abstracts;
 public interface IUserService
 {
     Task<ServiceResult<UserDto>> RegisterAsync(RegisterDto registerDto);
+    Task<ServiceResult<CurrentUserDto>> GetCurrentUserAsync(string userId);
     Task<ServiceResult<UserDto>> GetUserByNameAsync(string userName);
     Task<ServiceResult<List<UserDto>>> GetAllAsync();
     Task<ServiceResult<UserDto>> GetByIdAsync(string id);

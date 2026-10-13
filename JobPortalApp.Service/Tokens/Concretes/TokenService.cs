@@ -23,15 +23,15 @@ public class TokenService : ITokenService
     }
     public async Task<TokenDto> CreateTokenAsync(User user)
     {
-        var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
-        var refreshTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.RefreshTokenExpiration);
+        var accessTokenExpiration = DateTime.UtcNow.AddMinutes(_tokenOption.AccessTokenExpiration);
+        var refreshTokenExpiration = DateTime.UtcNow.AddMinutes(_tokenOption.RefreshTokenExpiration);
         var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey);
         SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
         var claims = await GetClaims(user, _tokenOption.Audience);
         JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(
             issuer: _tokenOption.Issuer,
             expires: accessTokenExpiration,
-            notBefore: DateTime.Now,
+            notBefore: DateTime.UtcNow,
             claims: claims,
             signingCredentials: signingCredentials);
         var handler = new JwtSecurityTokenHandler();

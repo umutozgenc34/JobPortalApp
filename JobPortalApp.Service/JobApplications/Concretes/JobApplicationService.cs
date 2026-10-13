@@ -2,6 +2,7 @@
 using JobPortalApp.Model.JobApplications.Dtos;
 using JobPortalApp.Model.JobApplications.Entities;
 using JobPortalApp.Repository.JobApplications.Abstracts;
+using JobPortalApp.Repository.JobPostings.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Service.JobApplications.Abstracts;
 using JobPortalApp.Shared.Responses;
@@ -13,6 +14,7 @@ namespace JobPortalApp.Service.JobApplications.Concretes;
 
 public class JobApplicationService(
     IJobApplicationRepository jobApplicationRepository,
+    IJobPostingRepository jobPostingRepository,
     IUnitOfWork unitOfWork,
     IMapper mapper,
     ILogger<JobApplicationService> logger
@@ -21,6 +23,19 @@ public class JobApplicationService(
     public async Task<ServiceResult<JobApplicationDto>> ApplyAsync(ApplyToJobRequest request, string userId)
     {
         logger.LogInformation("ApplyAsync started for UserId: {UserId}, JobPostingId: {JobPostingId}", userId, request.JobPostingId);
+
+        var jobPosting = await jobPostingRepository.GetByIdAsync(request.JobPostingId);
+        if (jobPosting is null)
+        {
+            logger.LogWarning("ApplyAsync failed. JobPosting {JobPostingId} not found.", request.JobPostingId);
+            return ServiceResult<JobApplicationDto>.Fail("Job posting not found.", HttpStatusCode.NotFound);
+        }
+
+        if (!jobPosting.IsActive)
+        {
+            logger.LogWarning("ApplyAsync failed. JobPosting {JobPostingId} is not active.", request.JobPostingId);
+            return ServiceResult<JobApplicationDto>.Fail("This job posting is no longer accepting applications.", HttpStatusCode.BadRequest);
+        }
 
         var hasApplied = await jobApplicationRepository.HasUserAppliedAsync(userId, request.JobPostingId);
         if (hasApplied)
@@ -42,9 +57,9 @@ public class JobApplicationService(
 
         logger.LogInformation("Application created with ID: {ApplicationId} for UserId: {UserId}", application.Id, userId);
 
-        var applicationDto = mapper.Map<JobApplicationDto>(application);
-        logger.LogInformation("ApplyAsync finished successfully for ApplicationId: {ApplicationId}", application.Id);
-        return ServiceResult<JobApplicationDto>.SuccessAsCreated(applicationDto, $"applications/{application.Id}");
+        var createdApplication = await jobApplicationRepository.GetWithDetailsAsync(application.Id);
+        var applicationDto = mapper.Map<JobApplicationDto>(createdApplication);
+        return ServiceResult<JobApplicationDto>.SuccessAsCreated(applicationDto, $"jobapplications/{application.Id}");
     }
 
     public async Task<ServiceResult<List<JobApplicationDto>>> GetApplicationsByUserIdAsync(string userId)

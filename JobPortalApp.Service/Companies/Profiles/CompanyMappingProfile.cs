@@ -8,8 +8,11 @@ public class CompanyMappingProfile : Profile
 {
     public CompanyMappingProfile()
     {
-        CreateMap<CreateCompanyRequest, Company>();
-        CreateMap<UpdateCompanyRequest, Company>();
+        CreateMap<CreateCompanyRequest, Company>()
+            .ForMember(dest => dest.LogoUrl, opt => opt.Ignore());
+        CreateMap<UpdateCompanyRequest, Company>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.LogoUrl, opt => opt.Ignore());
         CreateMap<Company, CompanytDto>().ReverseMap() ;
         CreateMap<Company, CompanyWithJobPostingsDto>();
 

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using JobPortalApp.Model.Users.Dtos;
-using Microsoft.AspNetCore.Http;
+using JobPortalApp.Service.Validators;
 
 namespace JobPortalApp.Service.Users.Validator;
 
@@ -17,32 +17,18 @@ public class CreateUserProfileRequestValidator : AbstractValidator<CreateUserPro
             .MaximumLength(500).WithMessage("Summary must be at most 500 characters.");
 
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email is required.")
-            .EmailAddress().WithMessage("Invalid email address.");
-
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("User ID is required.");
+            .EmailAddress().WithMessage("Invalid email address.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Email));
 
         RuleFor(x => x.ProfileImage)
-            .Must(BeAnImageFile).When(x => x.ProfileImage is not null)
-            .WithMessage("Only image files are allowed (jpg, jpeg, png).");
+            .Must(FileRules.IsImage).WithMessage("Only image files are allowed (jpg, jpeg, png, webp).")
+            .Must(file => file!.Length <= FileRules.MaxImageSizeInBytes).WithMessage("Profile image must be smaller than 2 MB.")
+            .When(x => x.ProfileImage is not null);
 
         RuleFor(x => x.CvFile)
-            .Must(BeAPdfFile).When(x => x.CvFile is not null)
-            .WithMessage("Only PDF files are allowed.");
-    }
-
-    private bool BeAnImageFile(IFormFile file)
-    {
-        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        return allowedExtensions.Contains(extension);
-    }
-
-    private bool BeAPdfFile(IFormFile file)
-    {
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        return extension == ".pdf";
+            .Must(FileRules.IsPdf).WithMessage("Only PDF files are allowed.")
+            .Must(file => file!.Length <= FileRules.MaxPdfSizeInBytes).WithMessage("CV file must be smaller than 5 MB.")
+            .When(x => x.CvFile is not null);
     }
 
 }

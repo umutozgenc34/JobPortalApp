@@ -14,8 +14,7 @@ public class CompanyReviewConfiguration : IEntityTypeConfiguration<CompanyReview
 
         builder.Property(cr => cr.Rating)
                .IsRequired()
-               .HasDefaultValue(1) 
-               .HasColumnType("tinyint"); 
+               .HasDefaultValue(1);
 
         builder.Property(cr => cr.Comment)
                .IsRequired()

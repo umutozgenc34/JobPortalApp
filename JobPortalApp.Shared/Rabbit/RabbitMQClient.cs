@@ -3,29 +3,37 @@ using RabbitMQ.Client;
 
 namespace JobPortalApp.Shared.Rabbit;
 
-public class RabbitMQClient : IDisposable
+public sealed class RabbitMQClient : IDisposable
 {
-    private readonly IConnection _connection;
-    private readonly IModel _channel;
+    private readonly ConnectionFactory _factory;
+    private readonly object _sync = new();
+    private IConnection? _connection;
 
     public RabbitMQClient(IConfiguration configuration)
     {
-        var factory = new ConnectionFactory()
+        _factory = new ConnectionFactory
         {
-            Uri = new Uri(configuration.GetConnectionString("RabbitMQ"))
+            Uri = new Uri(configuration.GetConnectionString("RabbitMQ")!),
+            DispatchConsumersAsync = true,
+            AutomaticRecoveryEnabled = true
         };
-
-        _connection = factory.CreateConnection();
-        _channel = _connection.CreateModel();
     }
 
-    public IModel GetChannel() => _channel;
+    public IModel CreateChannel()
+    {
+        lock (_sync)
+        {
+            _connection ??= _factory.CreateConnection();
+            return _connection.CreateModel();
+        }
+    }
 
     public void Dispose()
     {
-        _channel?.Close();
-        _channel?.Dispose();
-        _connection?.Close();
-        _connection?.Dispose();
+        lock (_sync)
+        {
+            _connection?.Dispose();
+            _connection = null;
+        }
     }
 }

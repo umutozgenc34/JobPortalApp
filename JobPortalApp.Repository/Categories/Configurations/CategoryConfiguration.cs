@@ -15,6 +15,6 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.HasMany(c => c.JobPostings)
                .WithOne(j => j.Category)
                .HasForeignKey(j => j.CategoryId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

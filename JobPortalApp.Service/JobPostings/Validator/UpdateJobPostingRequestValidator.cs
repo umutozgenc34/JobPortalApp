@@ -7,8 +7,6 @@ public class UpdateJobPostingRequestValidator : AbstractValidator<UpdateJobPosti
 {
     public UpdateJobPostingRequestValidator()
     {
-        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
-
         RuleFor(x => x.Title)
          .NotEmpty().WithMessage("Job title is required.")
          .MaximumLength(255).WithMessage("Job title must not exceed 255 characters.");

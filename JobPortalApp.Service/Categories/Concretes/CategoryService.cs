@@ -2,6 +2,7 @@
 using JobPortalApp.Model.Categories.Dtos;
 using JobPortalApp.Model.Categories.Entities;
 using JobPortalApp.Repository.Categories.Abstracts;
+using JobPortalApp.Repository.JobPostings.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Service.Categories.Abstracts;
 using JobPortalApp.Shared.Responses;
@@ -11,8 +12,8 @@ using System.Net;
 
 namespace JobPortalApp.Service.Categories.Concretes;
 
-public class CategoryService(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork, IMapper mapper,
-                             ILogger<CategoryService> logger) : ICategoryService
+public class CategoryService(ICategoryRepository categoryRepository, IJobPostingRepository jobPostingRepository, IUnitOfWork unitOfWork,
+                             IMapper mapper, ILogger<CategoryService> logger) : ICategoryService
 {
     public async Task<ServiceResult<CategoryDto>> CreateAsync(CreateCategoryRequest request)
     {
@@ -47,6 +48,13 @@ public class CategoryService(ICategoryRepository categoryRepository, IUnitOfWork
             return ServiceResult.Fail("Category not found.", HttpStatusCode.NotFound);
         }
 
+        var hasJobPostings = await jobPostingRepository.Where(j => j.CategoryId == id).AnyAsync();
+        if (hasJobPostings)
+        {
+            logger.LogWarning("DeleteAsync failed. Category {Id} still has job postings.", id);
+            return ServiceResult.Fail("This category has job postings. Move or delete them first.", HttpStatusCode.BadRequest);
+        }
+
         categoryRepository.Delete(category);
         await unitOfWork.SaveChangesAsync();
 
@@ -58,7 +66,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IUnitOfWork
     {
         logger.LogInformation("GetAllAsync called.");
 
-        var categories = await categoryRepository.GetAllAsync();
+        var categories = await categoryRepository.Where().OrderBy(c => c.Name).ToListAsync();
         var categoryAsDtos = mapper.Map<List<CategoryDto>>(categories);
 
         logger.LogInformation("GetAllAsync returned {Count} categories.", categoryAsDtos.Count);

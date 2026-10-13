@@ -4,6 +4,7 @@ using JobPortalApp.Model.Companies.Entities;
 using JobPortalApp.Repository.Companies.Abstracts;
 using JobPortalApp.Repository.UnitOfWorks.Abstracts;
 using JobPortalApp.Service.Companies.Abstracts;
+using JobPortalApp.Shared.Caching;
 using JobPortalApp.Shared.Responses;
 using JobPortalApp.Shared.Services.Cloudinaryy.Abstracts;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +13,13 @@ using System.Net;
 
 namespace JobPortalApp.Service.Companies.Concretes;
 
-public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork unitOfWork, IMapper mapper,ICloudinaryService cloudinaryService,
-                            ILogger<CompanyService> logger) : ICompanyService
+public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService,
+                            ICacheService cacheService, ILogger<CompanyService> logger) : ICompanyService
 {
+    private const string AllCompaniesCacheKey = "companies:all";
+    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
+    private static string CompanyCacheKey(int id) => $"companies:{id}";
+
     public async Task<ServiceResult<CompanytDto>> CreateAsync(CreateCompanyRequest request)
     {
         logger.LogInformation("CreateAsync started with Name: {Name}", request.Name);
@@ -28,19 +33,18 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
 
         var company = mapper.Map<Company>(request);
 
-        if (request.LogoUrl is not null)
+        if (request.Logo is not null)
         {
-            var logoUrl = await cloudinaryService.UploadImage(request.LogoUrl, "logos");
-            company.LogoUrl = logoUrl;
+            company.LogoUrl = await cloudinaryService.UploadImage(request.Logo, "logos");
         }
 
         await companyRepository.AddAsync(company);
         await unitOfWork.SaveChangesAsync();
+        await cacheService.RemoveAsync(AllCompaniesCacheKey);
 
         logger.LogInformation("Company created with ID: {CompanyId}", company.Id);
 
         var companyAsDto = mapper.Map<CompanytDto>(company);
-        logger.LogInformation("CreateAsync finished successfully for ID: {Id}", company.Id);
         return ServiceResult<CompanytDto>.SuccessAsCreated(companyAsDto, $"companies/{company.Id}");
     }
 
@@ -57,6 +61,7 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
 
         companyRepository.Delete(company);
         await unitOfWork.SaveChangesAsync();
+        await cacheService.RemoveAsync(AllCompaniesCacheKey, CompanyCacheKey(id));
 
         logger.LogInformation("Company deleted successfully. ID: {Id}", id);
         return ServiceResult.Success("Company deleted successfully.", HttpStatusCode.NoContent);
@@ -66,8 +71,15 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
     {
         logger.LogInformation("GetAllAsync called.");
 
-        var companies = await companyRepository.GetAllAsync();
+        var cachedCompanies = await cacheService.GetAsync<List<CompanytDto>>(AllCompaniesCacheKey);
+        if (cachedCompanies is not null)
+        {
+            return ServiceResult<List<CompanytDto>>.Success(cachedCompanies);
+        }
+
+        var companies = await companyRepository.Where().AsNoTracking().OrderBy(c => c.Name).ToListAsync();
         var companyAsDtos = mapper.Map<List<CompanytDto>>(companies);
+        await cacheService.SetAsync(AllCompaniesCacheKey, companyAsDtos, CacheDuration);
 
         logger.LogInformation("GetAllAsync returned {Count} companies.", companyAsDtos.Count);
         return ServiceResult<List<CompanytDto>>.Success(companyAsDtos);
@@ -77,6 +89,12 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
     {
         logger.LogInformation("GetByIdAsync called for ID: {Id}", id);
 
+        var cachedCompany = await cacheService.GetAsync<CompanytDto>(CompanyCacheKey(id));
+        if (cachedCompany is not null)
+        {
+            return ServiceResult<CompanytDto>.Success(cachedCompany);
+        }
+
         var company = await companyRepository.GetByIdAsync(id);
         if (company is null)
         {
@@ -85,6 +103,8 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
         }
 
         var companyAsDto = mapper.Map<CompanytDto>(company);
+        await cacheService.SetAsync(CompanyCacheKey(id), companyAsDto, CacheDuration);
+
         logger.LogInformation("GetByIdAsync succeeded for ID: {Id}", id);
         return ServiceResult<CompanytDto>.Success(companyAsDto);
     }
@@ -112,14 +132,14 @@ public class CompanyService(ICompanyRepository companyRepository, IUnitOfWork un
 
         mapper.Map(request, company);
 
-        if (request.LogoUrl is not null)
+        if (request.Logo is not null)
         {
-            var logoUrl = await cloudinaryService.UploadImage(request.LogoUrl, "logos");
-            company.LogoUrl = logoUrl;
+            company.LogoUrl = await cloudinaryService.UploadImage(request.Logo, "logos");
         }
 
         companyRepository.Update(company);
         await unitOfWork.SaveChangesAsync();
+        await cacheService.RemoveAsync(AllCompaniesCacheKey, CompanyCacheKey(id));
 
         logger.LogInformation("UpdateAsync completed successfully for ID: {Id}", id);
         return ServiceResult.Success("Company updated successfully.", HttpStatusCode.NoContent);

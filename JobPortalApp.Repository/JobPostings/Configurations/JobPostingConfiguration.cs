@@ -17,8 +17,7 @@ public class JobPostingConfiguration : IEntityTypeConfiguration<JobPosting>
                .HasMaxLength(255);
 
         builder.Property(j => j.Description)
-               .IsRequired()
-               .HasColumnType("TEXT"); 
+               .IsRequired();
 
         builder.Property(j => j.Location)
                .IsRequired()

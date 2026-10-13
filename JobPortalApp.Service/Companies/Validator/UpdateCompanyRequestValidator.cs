@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using JobPortalApp.Model.Companies.Dtos;
+using JobPortalApp.Service.Validators;
 
 namespace JobPortalApp.Service.Companies.Validator;
 
@@ -7,9 +8,6 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
 {
     public UpdateCompanyRequestValidator()
     {
-        RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("Please enter a valid ID.");
-
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Company name cannot be empty.")
             .MaximumLength(100).WithMessage("Company name must be at most 100 characters.");
@@ -29,5 +27,10 @@ public class UpdateCompanyRequestValidator : AbstractValidator<UpdateCompanyRequ
         RuleFor(x => x.PhoneNumber)
             .Matches(@"^\+?\d{10,15}$").WithMessage("Please enter a valid phone number.")
             .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
+
+        RuleFor(x => x.Logo)
+            .Must(FileRules.IsImage).WithMessage("Only image files are allowed (jpg, jpeg, png, webp).")
+            .Must(file => file!.Length <= FileRules.MaxImageSizeInBytes).WithMessage("Logo must be smaller than 2 MB.")
+            .When(x => x.Logo is not null);
     }
 }

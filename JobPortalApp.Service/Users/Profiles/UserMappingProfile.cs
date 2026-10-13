@@ -11,8 +11,10 @@ public class UserMappingProfile : Profile
         CreateMap<UpdateUserRequest, User>();
         CreateMap<UserDto, User>().ReverseMap();
 
-        CreateMap<CreateUserProfileRequest, UserProfile>();
-        CreateMap<UpdateUserProfileRequest, UserProfile>();
+        CreateMap<CreateUserProfileRequest, UserProfile>()
+            .ForMember(dest => dest.Email, opt => opt.Ignore());
+        CreateMap<UpdateUserProfileRequest, UserProfile>()
+            .ForMember(dest => dest.Email, opt => opt.Ignore());
         CreateMap<UserProfile,UserProfileDto>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
             .ReverseMap();

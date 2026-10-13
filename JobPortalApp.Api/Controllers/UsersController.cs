@@ -1,44 +1,39 @@
-﻿using JobPortalApp.Model.Users.Dtos;
+﻿using JobPortalApp.Api.Extensions;
+using JobPortalApp.Model.Users.Dtos;
 using JobPortalApp.Service.Users.Abstracts;
+using JobPortalApp.Shared.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobPortalApp.Api.Controllers;
 
+[Authorize]
 public class UsersController(IUserService userService) : CustomBaseController
 {
-    [Authorize]
-    [HttpGet("username")]
-    public async Task<IActionResult> GetUser()
-    {
-        var userName = HttpContext.User.Identity?.Name;
-        if (string.IsNullOrEmpty(userName))
-        {
-            return NotFound("Kullanıcı adı bulunamadı.");
-        }
-        return CreateActionResult(await userService.GetUserByNameAsync(userName));
-    }
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+        => CreateActionResult(await userService.GetCurrentUserAsync(User.GetUserId()));
 
-    [Authorize]
+    [HttpPut("me")]
+    public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUserRequest request)
+        => CreateActionResult(await userService.UpdateAsync(User.GetUserId(), request));
+
+    [Authorize(Roles = AppRoles.Administrators)]
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
         => CreateActionResult(await userService.GetAllAsync());
 
-    [Authorize]
+    [Authorize(Roles = AppRoles.Administrators)]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById([FromRoute] string id)
         => CreateActionResult(await userService.GetByIdAsync(id));
 
-    [Authorize(Roles ="Admin,SuperAdmin")]
+    [Authorize(Roles = AppRoles.Administrators)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser([FromRoute] string id)
         => CreateActionResult(await userService.DeleteAsync(id));
-    [Authorize]
-    [HttpPut]
-    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
-        => CreateActionResult(await userService.UpdateAsync(request.Id, request));
-    [Authorize]
+
+    [Authorize(Roles = AppRoles.Administrators)]
     [HttpGet("users-with-profiles")]
     public async Task<IActionResult> GetUsersWithProfiles() => CreateActionResult(await userService.GetUsersWithProfilesAsync());
-
 }

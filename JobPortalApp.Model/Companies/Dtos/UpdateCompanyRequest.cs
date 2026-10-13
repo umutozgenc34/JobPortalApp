@@ -3,11 +3,10 @@
 namespace JobPortalApp.Model.Companies.Dtos;
 
 public sealed record UpdateCompanyRequest(
-    int Id,
     string Name,
     string About,
     string Industry,
-    IFormFile LogoUrl,
+    IFormFile? Logo,
     string? Email,
     string? PhoneNumber,
     string? WebsiteUrl,

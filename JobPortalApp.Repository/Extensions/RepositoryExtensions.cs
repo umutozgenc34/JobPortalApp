@@ -29,9 +29,7 @@ public static class RepositoryExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICategoryRepository,CategoryRepository>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
-        services.Decorate<ICompanyRepository,CompanyRepositoryWithCache>();
         services.AddScoped<ICompanyReviewRepository, CompanyReviewRepository>();
-        services.Decorate<ICompanyReviewRepository,CompanyReviewRepositoryWithCache>();
         services.AddScoped<IJobPostingRepository, JobPostingRepository>();
         services.AddScoped<IUserProfileRepository, UserProfileRepository>();
         services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();

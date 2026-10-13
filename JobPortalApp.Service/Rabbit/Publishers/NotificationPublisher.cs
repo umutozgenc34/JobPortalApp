@@ -1,29 +1,53 @@
 ﻿using JobPortalApp.Service.Rabbit.Messages;
 using JobPortalApp.Shared.Rabbit;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-public class NotificationPublisher
-{
-    private readonly RabbitMQClient _rabbitMQClient;
+namespace JobPortalApp.Service.Rabbit.Publishers;
 
-    public NotificationPublisher(RabbitMQClient rabbitMQClient)
-    {
-        _rabbitMQClient = rabbitMQClient;
-    }
+public sealed class NotificationPublisher(RabbitMQClient rabbitMQClient, ILogger<NotificationPublisher> logger) : IDisposable
+{
+    private readonly object _sync = new();
+    private IModel? _channel;
 
     public void Publish(NotificationMessage message)
     {
-        var channel = _rabbitMQClient.GetChannel();
+        try
+        {
+            lock (_sync)
+            {
+                if (_channel is null || _channel.IsClosed)
+                {
+                    _channel?.Dispose();
+                    _channel = rabbitMQClient.CreateChannel();
+                    _channel.QueueDeclare(queue: RabbitQueues.Notifications, durable: true, exclusive: false, autoDelete: false);
+                }
 
-        channel.QueueDeclare(queue: "notifications", durable: true, exclusive: false, autoDelete: false);
+                var properties = _channel.CreateBasicProperties();
+                properties.Persistent = true;
 
-        var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
+                var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
-        channel.BasicPublish(exchange: "",
-                             routingKey: "notifications",
-                             basicProperties: null,
-                             body: body);
+                _channel.BasicPublish(exchange: "",
+                                      routingKey: RabbitQueues.Notifications,
+                                      basicProperties: properties,
+                                      body: body);
+            }
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Notification could not be published to RabbitMQ. Title: {Title}", message.Title);
+        }
+    }
+
+    public void Dispose()
+    {
+        lock (_sync)
+        {
+            _channel?.Dispose();
+            _channel = null;
+        }
     }
 }

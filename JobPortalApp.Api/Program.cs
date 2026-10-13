@@ -1,10 +1,35 @@
+using DotNetEnv;
 using JobPortalApp.Repository.Extensions;
 using JobPortalApp.Service;
 using JobPortalApp.Service.Extensions;
 using JobPortalApp.Shared.Extensions;
 using JobPortalApp.Shared.Versioning;
 
+
+Env.TraversePath().NoClobber().Load();
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+string[] requiredSettings =
+[
+    "ConnectionStrings:SqlServer",
+    "ConnectionStrings:Redis",
+    "ConnectionStrings:RabbitMQ",
+    "TokenOption:SecurityKey",
+    "CloudinarySettings:CloudName",
+    "CloudinarySettings:ApiKey",
+    "CloudinarySettings:ApiSecret"
+];
+var missingSettings = requiredSettings
+    .Where(key => string.IsNullOrWhiteSpace(builder.Configuration[key]))
+    .ToArray();
+if (missingSettings.Length > 0)
+{
+    throw new InvalidOperationException(
+        $"Missing configuration: {string.Join(", ", missingSettings)}. " +
+        "Copy .env.example to .env in the solution root and fill in the values.");
+}
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

@@ -1,0 +1,419 @@
+.hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.hero__inner {
+  display: grid;
+  gap: 32px;
+  padding-top: 88px;
+  padding-bottom: 56px;
+}
+
+.hero__copy {
+  display: grid;
+  gap: 16px;
+  max-width: 720px;
+}
+
+.hero__title {
+  font-size: clamp(36px, 5.2vw, 64px);
+  font-weight: 700;
+  font-stretch: 108%;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.hero__lead {
+  font-size: 19px;
+  max-width: 52ch;
+}
+
+.hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 56px;
+  margin: 8px 0 0;
+}
+
+.hero__stats dt {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.hero__stats dd {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.home__section + .home__section {
+  margin-top: 64px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.section-head h2 {
+  font-size: 24px;
+}
+
+.category-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.category-card {
+  display: grid;
+  gap: 24px;
+  padding: 20px;
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.category-card:hover {
+  border-color: var(--ink);
+}
+
+.category-card__name {
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.category-card__action {
+  font-size: 14px;
+}
+
+.category-card:hover .category-card__action {
+  color: var(--accent);
+}
+
+.company-strip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.company-chip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  transition: border-color 0.2s var(--ease);
+}
+
+.company-chip:hover {
+  border-color: var(--ink);
+}
+
+.company-chip > span:last-child {
+  display: grid;
+  min-width: 0;
+}
+
+.company-chip__name {
+  font-weight: 600;
+}
+
+.company-chip__industry {
+  font-size: 14px;
+}
+
+.page-header {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: clamp(30px, 3.6vw, 40px);
+  font-weight: 700;
+}
+
+.jobs-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+  align-items: start;
+}
+
+.filters {
+  position: sticky;
+  top: 92px;
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+}
+
+.filters__title {
+  font-size: 16px;
+}
+
+.jobs-results__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.jobs-results__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+.detail-header {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 28px;
+}
+
+.detail-header__main {
+  display: grid;
+  gap: 6px;
+}
+
+.detail-header__title {
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.detail-header__company {
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.detail-header__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  margin-top: 24px;
+  align-items: start;
+}
+
+.detail-body {
+  display: grid;
+  gap: 14px;
+  padding: 28px;
+}
+
+.detail-body h2 {
+  font-size: 20px;
+}
+
+.detail-body__text {
+  font-size: 16px;
+  line-height: 1.7;
+  white-space: pre-line;
+  max-width: 70ch;
+}
+
+.detail-aside {
+  position: sticky;
+  top: 92px;
+  display: grid;
+  gap: 16px;
+}
+
+.apply {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.apply__title {
+  font-size: 19px;
+}
+
+.apply__counter {
+  justify-self: end;
+}
+
+.apply__alt {
+  font-size: 14px;
+  text-align: center;
+}
+
+.apply--done {
+  border-color: color-mix(in srgb, var(--success) 35%, var(--line));
+}
+
+.apply__check {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--success-soft);
+  color: var(--success);
+  font-weight: 700;
+}
+
+.facts {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 8px 24px;
+}
+
+.facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+.facts > div + div {
+  border-top: 1px solid var(--line);
+}
+
+.facts dt {
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 550;
+  text-align: right;
+}
+
+.auth {
+  display: grid;
+  place-items: center;
+  padding-top: 64px;
+}
+
+.auth__card {
+  width: 100%;
+  max-width: 440px;
+  padding: 36px;
+}
+
+.auth__title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.auth__lead {
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.auth__form {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.auth__switch {
+  margin-top: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.state {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  min-height: 50vh;
+  align-content: center;
+}
+
+.state__code {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+@media (max-width: 960px) {
+  .jobs-layout,
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filters,
+  .detail-aside {
+    position: static;
+  }
+
+  .filters {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+
+  .filters__title {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero__inner {
+    padding-top: 48px;
+    padding-bottom: 40px;
+  }
+
+  .hero__stats {
+    gap: 12px 32px;
+  }
+
+  .hero__stats dd {
+    font-size: 24px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .detail-body,
+  .apply {
+    padding: 20px;
+  }
+
+  .auth {
+    padding-top: 24px;
+  }
+
+  .auth__card {
+    padding: 24px;
+  }
+}
